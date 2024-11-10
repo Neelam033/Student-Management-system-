@@ -1,0 +1,106 @@
+{% extends "crudapp\base.html" %}
+
+
+{% block content1 %}
+{% if student  %}
+<table  class="table table-hover mt-3">
+    <tr>
+        <th> ID</th>
+        <th> First Name </th>
+        <th> Last Name</th>
+        <th> Email Id</th>
+        <th> Phone</th>
+        <th> Branch</th>
+        <th> Action</th>
+    </tr>
+
+    {%  for st in student %}
+
+    <tr>
+        <td> {{st.id}} </td>
+        <td> {{st.fname}} </td>
+        <td> {{st.lname}} </td>
+        <td> {{st.email}} </td>
+        <td> {{st.phone}} </td>
+        <td> {{ st.get_branch_display }} </td>
+        {% comment %} #get_branch_display is a method provided by Django for model choice fields that returns the human-readable name of the field. {% endcomment %}
+        <td>
+
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#viewModal{{st.id}}">
+                <i class="fa-solid fa-circle-info"></i> View
+            </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="viewModal{{st.id}}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel{{st.id}}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewModalLabel{{st.id}}">Student:{{st.fname}} {{st.lname}} </h5>
+
+                        </div>
+                        <div class="modal-body">
+                            <ul style="list-style-type:none;">
+                                <li>Student id : <strong> {{st.id}} </strong></li>
+                                <li>Student First Name : <strong> {{st.fname}} </strong></li>
+                                <li>Student Last Name : <strong>  {{st.lname}}</strong></li>
+                                <li>Student email id : <strong> {{st.email}} </strong></li>
+                                <li>Student phone no : <strong> {{st.phone}} </strong></li>
+                                <li>Student Branch : <strong> {{ st.get_branch_display }} </strong></li>
+
+                            </ul>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <a href="{% url 'update' st.id %}" class="btn btn-warning btn-sm">
+                <i class="fa-regular fa-pen-to-square"></i> Edit
+            </a>
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{st.id}}">
+                <i class="fa-solid fa-trash"></i> Delete
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal{{st.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{st.id}}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{st.id}}">Confirm Deletion</h5>
+
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete the student?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="{% url 'delete' st.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                            </form>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </td>
+
+    </tr>
+    {% endfor %}
+
+    </table>
+
+    {% else %}
+    <h1 class="bg-primary mt-5  text-center "> No data</h1>
+    {% endif %}
+
+{% endblock content1 %}
